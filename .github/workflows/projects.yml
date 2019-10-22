@@ -9,6 +9,12 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: Print some variables
+              shell: bash
+              run: |
+                  echo $ {{ github.event.changes}}
+                  echo $ {{ github.event.project_card}}
+                  echo ::debug:: ${{ github.event}}
             - name: Check move from "TODO" to "IN PROGRESS"
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
