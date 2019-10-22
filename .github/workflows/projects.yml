@@ -10,11 +10,10 @@ jobs:
 
         steps:
             - name: Print some variables
-              shell: bash
-              run: |
-                  echo $ {{ github.event.changes}}
-                  echo $ {{ github.event.project_card}}
-                  echo ::debug:: ${{ github.event}}
+              env:
+                  GITHUB_CONTEXT: ${{ toJson(github)}}
+                  GITHUB_EVENT_CONTEXT: ${{ toJson(github.event)}}
+              run:
             - name: Check move from "TODO" to "IN PROGRESS"
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
