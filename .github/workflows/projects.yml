@@ -13,9 +13,9 @@ jobs:
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
                   token: $ {{ secrets.GITHUB_TOKEN}}
-                  fromColumndId: $ {{ github.event.changes.column_id.from}}
+                  fromColumndId: $ {{ github.event.changes.bogus.from}}
                   fromColumnName: TODO
-                  toColumnId: $ {{ github.event.project_card.column_id}}
+                  toColumnId: $ {{ github.event.project_card.bogus}}
                   toColumnName: IN PROGRESS
             - uses: actions/checkout@v1
             - name: Show environment variables
