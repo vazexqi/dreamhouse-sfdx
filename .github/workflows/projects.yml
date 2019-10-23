@@ -12,10 +12,10 @@ jobs:
             - name: Check move from "TODO" to "IN PROGRESS"
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
-                  token: $ {{ secrets.GITHUB_TOKEN}}
-                  fromColumndId: $ {{ github.event.changes.column_id.from}}
+                  token: ${{ secrets.GITHUB_TOKEN}}
+                  fromColumndId: ${{ github.event.changes.column_id.from}}
                   fromColumnName: TODO
-                  toColumnId: $ {{ github.event.project_card.column_id}}
+                  toColumnId: ${{ github.event.project_card.column_id}}
                   toColumnName: IN PROGRESS
             - uses: actions/checkout@v1
             - name: Show environment variables
