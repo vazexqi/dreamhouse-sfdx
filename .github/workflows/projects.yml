@@ -13,7 +13,7 @@ jobs:
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
                   token: ${{ secrets.GITHUB_TOKEN}}
-                  fromColumndId: ${{ github.event.changes.column_id.from}}
+                  fromColumnId: ${{ github.event.changes.column_id.from}}
                   fromColumnName: TODO
                   toColumnId: ${{ github.event.project_card.column_id}}
                   toColumnName: IN PROGRESS
