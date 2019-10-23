@@ -51,7 +51,14 @@ jobs:
               with:
                   args: force:user:password:generate --targetusername=new-user
             - name: Display user information
+              id: display
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
                   args: force:user:display --targetusername=new-user --json
+            - name: SendGrid
+              uses: peter-evans/sendgrid-action@v1.0.0
+              env:
+                  DISPLAY_USER_JSON: ${{ steps.display.outputs.result }}
+                  SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+                  SCRIPT_FILEPATH: ./scripts/email.js
