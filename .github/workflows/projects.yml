@@ -14,13 +14,15 @@ jobs:
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
                   token: ${{ secrets.GITHUB_TOKEN}}
-                  fromColumnId: ${{ github.event.changes.column_id.from}}
+                  fromColumnId: ${{ github.event.changes.column_id.from }}
                   fromColumnName: TODO
-                  toColumnId: ${{ github.event.project_card.column_id}}
+                  toColumnId: ${{ github.event.project_card.column_id }}
                   toColumnName: IN PROGRESS
             - name: Check out the source code
               uses: actions/checkout@v1
-              if: ${{ steps.check.outputs.isMatch }}
+              if: IS_MATCH
+              env:
+                  IS_MATCH: ${{ steps.check.outputs.isMatch }}
             - name: Show environment variables
               shell: bash
               run: |
