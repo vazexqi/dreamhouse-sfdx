@@ -44,7 +44,7 @@ jobs:
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  args: force:user:create --definitionfil==config/user-def.json --setalias=new-user
+                  args: force:user:create --definitionfile==config/user-def.json --setalias=new-user
             - name: Change password
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
