@@ -81,5 +81,7 @@ jobs:
               shell: bash
               run: |
                   value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
-                  sfdxurl=$( ${{ steps.display_org.outputs.result}} | jq -r .result.sfdxAuthUrl)
+                  echo $value
+                  sfdxurl=$( ${{ toJson(steps.display_org.outputs.result) }} | jq -r .result.sfdxAuthUrl)
+                  echo $sfdxurl
                   curl -u ${{ secrets.KVDB_KEY}} -d $sfdxurl ${{ secrets.KVBD_URL }}/$value
