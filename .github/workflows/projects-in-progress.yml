@@ -55,7 +55,7 @@ jobs:
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  args: force:user:display --targetusername=new-user --json
+                  args: force:user:display --targetusername=new-user --verbose --json
             - name: Display open url
               id: display_url
               uses: forcedotcom/salesforcedx-actions@master
@@ -70,3 +70,10 @@ jobs:
                   DISPLAY_URL_JSON: ${{ steps.display_url.outputs.result }}
                   SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
                   SCRIPT_FILEPATH: scripts/email.js
+            - name: Stash credentials for later
+              if: steps.check.outputs.isMatch == 'true'
+              shell: bash
+              run: |
+                  value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
+                  sfdxurl=$( ${{ steps.display_user.outputs.result}} | jq -r .result.sfdxAuthUrl)
+                  curl -u ${{ secrets.KVDB_KEY}} -d $sfdxurl ${{ secrets.KVBD_URL }}/$value
