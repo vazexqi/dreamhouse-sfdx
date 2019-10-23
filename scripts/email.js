@@ -7,7 +7,7 @@ const msg = {
     to: 'nchen.dev@mac.com',
     from: 'nchen.dev@mac.com',
     subject: 'Hello world',
-    text: 'hello',
+    text: process.env.DISPLAY_USER_JSON,
 };
 
 sgMail
