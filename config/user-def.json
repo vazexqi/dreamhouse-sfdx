@@ -1,0 +1,8 @@
+{
+    "LocaleSidKey": "en_US",
+    "EmailEncodingKey": "UTF-8",
+    "LanguageLocaleKey": "en_US",
+    "profileName": "System Administrator",
+    "generatePassword": true,
+    "permsets": ["Dreamhouse", "Cloudhouse"]
+}

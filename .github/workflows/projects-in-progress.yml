@@ -1,0 +1,52 @@
+name: Starting a new work item
+
+on:
+    project_card:
+        types: [moved]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check move from "TODO" to "IN PROGRESS"
+              id: check
+              uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN}}
+                  fromColumnId: ${{ github.event.changes.column_id.from }}
+                  fromColumnName: TODO
+                  toColumnId: ${{ github.event.project_card.column_id }}
+                  toColumnName: IN PROGRESS
+            - name: Check out the source code
+              uses: actions/checkout@v1
+              if: steps.check.outputs.isMatch == 'true'
+            - name: Populate auth file with SFDX_URL secret
+              if: steps.check.outputs.isMatch == 'true'
+              shell: bash
+              run: echo ${{ secrets.DEV_HUB_SFDXURL}} > ./SFDX_URL_STORE.txt
+            - name: Authenticate against dev hub
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername
+            - name: Create scratch org
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
+            - name: Push source
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:source:push
+            - name: Create user
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:user:create --definitionfile ./config/user-def.json --setalias=new-user
+            - name: Change password
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:user:password:generate --targetusername=new-user --json
