@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
-import { setApiKey, send } from '@sendgrid/mail';
-setApiKey(process.env.SENDGRID_API_KEY);
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const DISPLAY_URL_JSON = JSON.parse(process.env.DISPLAY_URL_JSON);
 const DISPLAY_USER_JSON = JSON.parse(process.env.DISPLAY_USER_JSON);
@@ -26,6 +26,7 @@ const msg = {
     text: TEXT,
 };
 
-send(msg)
+sgMail
+    .send(msg)
     .then(() => console.log('Mail sent successfully'))
     .catch(error => console.error(error.toString()));
