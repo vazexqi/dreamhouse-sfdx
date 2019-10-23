@@ -58,6 +58,7 @@ jobs:
                   args: force:user:display --targetusername=new-user --json
             - name: SendGrid
               uses: peter-evans/sendgrid-action@v1.0.0
+              if: steps.check.outputs.isMatch == 'true'
               env:
                   DISPLAY_USER_JSON: ${{ steps.display.outputs.result }}
                   SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
