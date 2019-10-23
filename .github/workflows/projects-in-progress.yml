@@ -49,4 +49,9 @@ jobs:
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  args: force:user:password:generate --targetusername=new-user --json
+                  args: force:user:password:generate --targetusername=new-user
+            - name: Display user information
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:user:display --targetusername=new-user --json
