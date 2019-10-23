@@ -44,7 +44,7 @@ jobs:
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  args: force:user:create --definitionfile ./config/user-def.json --setalias=new-user
+                  args: force:user:create --definitionfil==config/user-def.json --setalias=new-user
             - name: Change password
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
@@ -62,4 +62,4 @@ jobs:
               env:
                   DISPLAY_USER_JSON: ${{ steps.display.outputs.result }}
                   SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-                  SCRIPT_FILEPATH: ./scripts/email.js
+                  SCRIPT_FILEPATH: scripts/email.js
