@@ -35,11 +35,11 @@ jobs:
               if: steps.check.outputs.isMatch == 'true'
               with:
                   args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
-            - name: Push source
-              uses: forcedotcom/salesforcedx-actions@master
-              if: steps.check.outputs.isMatch == 'true'
-              with:
-                  args: force:source:push
+            # - name: Push source
+            #   uses: forcedotcom/salesforcedx-actions@master
+            #   if: steps.check.outputs.isMatch == 'true'
+            #   with:
+            #       args: force:source:push
             - name: Create user
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
@@ -55,7 +55,7 @@ jobs:
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  args: force:user:display --targetusername=new-user --verbose --json
+                  args: force:user:display --targetusername=new-user --json
             - name: Display open url
               id: display_url
               uses: forcedotcom/salesforcedx-actions@master
@@ -70,10 +70,16 @@ jobs:
                   DISPLAY_URL_JSON: ${{ steps.display_url.outputs.result }}
                   SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
                   SCRIPT_FILEPATH: scripts/email.js
+            - name: Display org information
+              id: display_org
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:org:display --targetusername=new-user --verbose --json
             - name: Stash credentials for later
               if: steps.check.outputs.isMatch == 'true'
               shell: bash
               run: |
                   value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
-                  sfdxurl=$( ${{ steps.display_user.outputs.result}} | jq -r .result.sfdxAuthUrl)
+                  sfdxurl=$( ${{ steps.display_org.outputs.result}} | jq -r .result.sfdxAuthUrl)
                   curl -u ${{ secrets.KVDB_KEY}} -d $sfdxurl ${{ secrets.KVBD_URL }}/$value
