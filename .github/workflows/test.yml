@@ -1,0 +1,17 @@
+name: Test
+
+on: [push]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out the source code
+              uses: actions/checkout@v1
+            - name: SendGrid
+              uses: peter-evans/sendgrid-action@v1.0.0
+              if: steps.check.outputs.isMatch == 'true'
+              env:
+                  SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+                  SCRIPT_FILEPATH: scripts/email.js
