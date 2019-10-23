@@ -35,11 +35,11 @@ jobs:
               if: steps.check.outputs.isMatch == 'true'
               with:
                   args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
-            # - name: Push source
-            #   uses: forcedotcom/salesforcedx-actions@master
-            #   if: steps.check.outputs.isMatch == 'true'
-            #   with:
-            #       args: force:source:push
+            - name: Push source
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:source:push
             - name: Create user
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
