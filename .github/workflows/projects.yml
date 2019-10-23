@@ -20,9 +20,7 @@ jobs:
                   toColumnName: IN PROGRESS
             - name: Check out the source code
               uses: actions/checkout@v1
-              if: IS_MATCH
-              env:
-                  IS_MATCH: ${{ steps.check.outputs.isMatch }}
+              if: steps.check.outputs.isMatch == 'true'
             - name: Show environment variables
               shell: bash
               run: |
