@@ -55,7 +55,7 @@ jobs:
               if: steps.check.outputs.isMatch == 'true'
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  branch: ${{ steps.unstash.outputs.project_card_value }}
+                  branch: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value) }}
                   force: true
             - name: Create a PR
               uses: vazexqi/salesforcedx-kanban-actions/pulls-create-pr@master
