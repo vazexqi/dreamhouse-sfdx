@@ -41,7 +41,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -157,7 +157,6 @@
         </rules>
     </decisions>
     <description>When the price of a property changes, post it to Slack</description>
-    <status>ACTIVE</status>
     <interviewLabel>Post_Price_Changes_to_Slack-1_InterviewLabel</interviewLabel>
     <label>Post Price Changes to Slack</label>
     <processMetadataValues>
@@ -186,6 +185,7 @@
     </processMetadataValues>
     <processType>Workflow</processType>
     <startElementReference>myVariable_waitStartTimeAssignment</startElementReference>
+    <status>Active</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>

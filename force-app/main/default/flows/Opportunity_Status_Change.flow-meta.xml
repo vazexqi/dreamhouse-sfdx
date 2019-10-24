@@ -41,7 +41,7 @@
             <processMetadataValues>
                 <name>objectType</name>
                 <value>
-                    <stringValue></stringValue>
+                    <stringValue/>
                 </value>
             </processMetadataValues>
             <processMetadataValues>
@@ -157,7 +157,6 @@
         </rules>
     </decisions>
     <description>When the status of an opportunity changes, post the new status to Slack</description>
-    <status>ACTIVE</status>
     <interviewLabel>Opportunity_Status_Change-1_InterviewLabel</interviewLabel>
     <label>Opportunity Status Change</label>
     <processMetadataValues>
@@ -186,6 +185,7 @@
     </processMetadataValues>
     <processType>Workflow</processType>
     <startElementReference>myVariable_waitStartTimeAssignment</startElementReference>
+    <status>Active</status>
     <variables>
         <name>myVariable_current</name>
         <dataType>SObject</dataType>
