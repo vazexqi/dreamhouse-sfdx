@@ -1,4 +1,4 @@
-name: SFDX Actions
+name: Start CI
 
 on:
   pull_request:
