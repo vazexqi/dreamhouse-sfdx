@@ -1,6 +1,8 @@
 name: SFDX Actions
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
 
 jobs:
     build:
