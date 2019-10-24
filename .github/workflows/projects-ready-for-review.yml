@@ -57,3 +57,14 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   branch: ${{ steps.unstash.outputs.project_card_value }}
                   force: true
+            - name: Create a PR
+              uses: vazexqi/salesforcedx-kanban-actions/pulls-create-pr@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN}}
+                  owner: ${{ github.event.repository.owner.login }}
+                  repo: ${{ github.event.repository.name }}
+                  title: ${{ format('Changes from \#{0}', steps.unstash.outputs.project_card_value)}}
+                  body: ${{ format('Changes from \#{0}', steps.unstash.outputs.project_card_value)}}
+                  head: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value)}}
+                  base: master
