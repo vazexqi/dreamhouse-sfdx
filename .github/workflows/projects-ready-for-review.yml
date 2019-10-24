@@ -9,15 +9,15 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Check move from "IN PROGRESS" to "READY TO REVIEW"
+            - name: Check move from "IN PROGRESS" to "READY FOR REVIEW"
               id: check
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
                   token: ${{ secrets.GITHUB_TOKEN}}
                   fromColumnId: ${{ github.event.changes.column_id.from }}
-                  fromColumnName: TODO
+                  fromColumnName: IN PROGRESS
                   toColumnId: ${{ github.event.project_card.column_id }}
-                  toColumnName: IN PROGRESS
+                  toColumnName: READY FOR REVIEW
             - name: Check out the source code
               uses: actions/checkout@v1
               if: steps.check.outputs.isMatch == 'true'
