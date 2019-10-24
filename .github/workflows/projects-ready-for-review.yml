@@ -1,0 +1,57 @@
+name: Creating a new PR
+
+on:
+    project_card:
+        types: [moved]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check move from "IN PROGRESS" to "READY TO REVIEW"
+              id: check
+              uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN}}
+                  fromColumnId: ${{ github.event.changes.column_id.from }}
+                  fromColumnName: TODO
+                  toColumnId: ${{ github.event.project_card.column_id }}
+                  toColumnName: IN PROGRESS
+            - name: Check out the source code
+              uses: actions/checkout@v1
+              if: steps.check.outputs.isMatch == 'true'
+            - name: Unstash credentials for user
+              id: unstash
+              if: steps.check.outputs.isMatch == 'true'
+              shell: bash
+              run: |
+                  value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
+                  echo ::set-output name=project_card_value::$value
+                  mkdir .github_actions
+                  touch .github_actions/.SFDX_URL_STORE.txt
+                  curl -u ${{ secrets.KVDB_KEY}} ${{ secrets.KVDB_URL }}/$value -o .github_actions/.SFDX_URL_STORE.txt
+            - name: Authenticate against scratch org
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:auth:sfdxurl:store --sfdxurlfile=.github_actions/.SFDX_URL_STORE.txt --setalias=scratch-org
+            - name: Retrieve metadata changes
+              uses: forcedotcom/salesforcedx-actions@master
+              if: steps.check.outputs.isMatch == 'true'
+              with:
+                  args: force:source:retrieve --manifest=manifest/package.xml --targetusername=scratch-org
+            - name: Commit Git changes
+              if: steps.check.outputs.isMatch == 'true'
+              bash: shell
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git switch -c branch/${{ steps.unstash.outputs.project_card_value }}
+                  git commit -m "Add new changes from scratch org" -a
+            - name: Push changes
+              uses: ad-m/github-push-action@master
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  branch: ${{ steps.unstash.outputs.project_card_value }}
+                  force: true
