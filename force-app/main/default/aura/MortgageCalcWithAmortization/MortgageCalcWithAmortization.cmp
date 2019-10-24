@@ -11,4 +11,4 @@
     <c:MortgageCalculator principal="{!v.property.Price__c}"/>
     <c:MortgageAmortizationChart/>
 
-</aura:component>	
+</aura:component>
