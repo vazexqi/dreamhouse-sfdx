@@ -48,7 +48,8 @@ jobs:
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action"
                   git switch -c branch/${{ steps.unstash.outputs.project_card_value }}
-                  git commit -m "Add new changes from scratch org" -a
+                  git add -A
+                  git commit -m "Add new changes from scratch org"
             - name: Push changes
               uses: ad-m/github-push-action@master
               if: steps.check.outputs.isMatch == 'true'
