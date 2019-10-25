@@ -63,7 +63,7 @@ jobs:
               with:
                   args: force:org:open --urlonly --targetusername=new-user --json
             - name: SendGrid
-              uses: peter-evans/sendgrid-action@v1.0.0
+              uses: vazexqi/sendgrid-action@v1.0.0
               if: steps.check.outputs.isMatch == 'true'
               env:
                   DISPLAY_USER_JSON: ${{ steps.display_user.outputs.result }}
