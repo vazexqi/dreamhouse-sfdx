@@ -30,6 +30,13 @@
         </componentInstances>
         <componentInstances>
             <componentInstanceProperties>
+                <name>height</name>
+                <value>500px</value>
+            </componentInstanceProperties>
+            <componentName>Bot</componentName>
+        </componentInstances>
+        <componentInstances>
+            <componentInstanceProperties>
                 <name>searchCriteria</name>
                 <value>Price</value>
             </componentInstanceProperties>
