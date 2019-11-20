@@ -1,0 +1,70 @@
+name: Creating a new PR
+
+on:
+    project_card:
+        types: [moved]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Check move from "IN PROGRESS" to "READY FOR REVIEW"
+            id: check
+            uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
+            with:
+                token: ${{ secrets.GITHUB_TOKEN}}
+                fromColumnId: ${{ github.event.changes.column_id.from }}
+                fromColumnName: IN PROGRESS
+                toColumnId: ${{ github.event.project_card.column_id }}
+                toColumnName: READY FOR REVIEW
+          - name: Check out the source code
+            uses: actions/checkout@v1
+            if: steps.check.outputs.isMatch == 'true'
+          - name: Unstash credentials for user
+            id: unstash
+            if: steps.check.outputs.isMatch == 'true'
+            shell: bash
+            run: |
+                value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
+                echo ::set-output name=project_card_value::$value
+                mkdir .github_actions
+                touch .github_actions/.SFDX_URL_STORE.txt
+                curl -u ${{ secrets.KVDB_KEY}} ${{ secrets.KVDB_URL }}/$value -o .github_actions/.SFDX_URL_STORE.txt
+          - name: Authenticate against scratch org
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:auth:sfdxurl:store --sfdxurlfile=.github_actions/.SFDX_URL_STORE.txt --setalias=scratch-org
+          - name: Retrieve metadata changes
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:source:retrieve --manifest=manifest/package.xml --targetusername=scratch-org
+          - name: Commit Git changes
+            if: steps.check.outputs.isMatch == 'true'
+            shell: bash
+            run: |
+                git config --local user.email "action@github.com"
+                git config --local user.name "GitHub Action"
+                git switch -c branch/${{ steps.unstash.outputs.project_card_value }}
+                git add -A
+                git commit -m "Add new changes from scratch org"
+          - name: Push changes
+            uses: vazexqi/github-push-action@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                branch: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value) }}
+                force: true
+          - name: Create a PR
+            uses: vazexqi/salesforcedx-kanban-actions/pulls-create-pr@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                token: ${{ secrets.GITHUB_TOKEN}}
+                owner: ${{ github.event.repository.owner.login }}
+                repo: ${{ github.event.repository.name }}
+                title: ${{ format('Changes from Issue {0}', steps.unstash.outputs.project_card_value)}}
+                body: ${{ format('Changes from \#{0}', steps.unstash.outputs.project_card_value)}}
+                head: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value)}}
+                base: master
