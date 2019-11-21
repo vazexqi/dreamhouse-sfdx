@@ -1,0 +1,86 @@
+name: Starting a new work item
+
+on:
+    project_card:
+        types: [moved]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Check move from "TODO" to "IN PROGRESS"
+            id: check
+            uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
+            with:
+                token: ${{ secrets.GITHUB_TOKEN}}
+                fromColumnId: ${{ github.event.changes.column_id.from }}
+                fromColumnName: TODO
+                toColumnId: ${{ github.event.project_card.column_id }}
+                toColumnName: IN PROGRESS
+          - name: Check out the source code
+            uses: actions/checkout@v1
+            if: steps.check.outputs.isMatch == 'true'
+          - name: Populate auth file with SFDX_URL secret
+            if: steps.check.outputs.isMatch == 'true'
+            shell: bash
+            run: echo ${{ secrets.DEV_HUB_SFDXURL}} > ./SFDX_URL_STORE.txt
+          - name: Authenticate against dev hub
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername
+          - name: Create scratch org
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername
+          - name: Push source
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:source:push
+          - name: Create user
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:user:create --definitionfile=config/user-def.json --setalias=new-user
+          - name: Change password
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:user:password:generate --targetusername=new-user
+          - name: Display user information
+            id: display_user
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:user:display --targetusername=new-user --json
+          - name: Display open url
+            id: display_url
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:org:open --urlonly --targetusername=new-user --json
+          - name: SendGrid
+            uses: vazexqi/sendgrid-action@v1.0.0
+            if: steps.check.outputs.isMatch == 'true'
+            env:
+                DISPLAY_USER_JSON: ${{ steps.display_user.outputs.result }}
+                DISPLAY_URL_JSON: ${{ steps.display_url.outputs.result }}
+                SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+                SCRIPT_FILEPATH: scripts/email.js
+          - name: Display org information
+            id: display_org
+            uses: forcedotcom/salesforcedx-actions@master
+            if: steps.check.outputs.isMatch == 'true'
+            with:
+                args: force:org:display --targetusername=new-user --verbose --json
+          - name: Stash credentials for later
+            if: steps.check.outputs.isMatch == 'true'
+            shell: bash
+            run: |
+                value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
+                result=${{ toJSON(steps.display_org.outputs.result) }}
+                sfdxurl=$(echo $result | jq -r .result.sfdxAuthUrl)
+                curl -u ${{ secrets.KVDB_KEY}} -d $sfdxurl ${{ secrets.KVDB_URL }}/$value
