@@ -13,7 +13,7 @@ jobs:
               id: check
               uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
               with:
-                  token: ${{ secrets.GITHUB_TOKEN}}
+                  token: ${{ secrets.TOKEN}}
                   fromColumnId: ${{ github.event.changes.column_id.from }}
                   fromColumnName: IN PROGRESS
                   toColumnId: ${{ github.event.project_card.column_id }}
@@ -54,14 +54,14 @@ jobs:
               uses: vazexqi/github-push-action@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  TOKEN: ${{ secrets.TOKEN }}
                   branch: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value) }}
                   force: true
             - name: Create a PR
               uses: vazexqi/salesforcedx-kanban-actions/pulls-create-pr@master
               if: steps.check.outputs.isMatch == 'true'
               with:
-                  token: ${{ secrets.GITHUB_TOKEN}}
+                  token: ${{ secrets.TOKEN}}
                   owner: ${{ github.event.repository.owner.login }}
                   repo: ${{ github.event.repository.name }}
                   title: ${{ format('Changes from Issue {0}', steps.unstash.outputs.project_card_value)}}

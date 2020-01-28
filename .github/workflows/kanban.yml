@@ -13,7 +13,7 @@ jobs:
             id: check
             uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
             with:
-                token: ${{ secrets.GITHUB_TOKEN}}
+                token: ${{ secrets.TOKEN}}
                 fromColumnId: ${{ github.event.changes.column_id.from }}
                 fromColumnName: TODO
                 toColumnId: ${{ github.event.project_card.column_id }}
