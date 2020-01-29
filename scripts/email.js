@@ -23,8 +23,8 @@ Login URL: ${DISPLAY_USER_JSON.result.loginUrl}
 `;
 
 const msg = {
-    to: 'nchen.dev@mac.com',
-    from: 'nchen.dev@mac.com',
+    to: 'nitesh.natha@appirio.com',
+    from: 'nitesh.natha@appirio.com',
     subject: 'Welcome to your new scratch org',
     text: TEXT,
 };
