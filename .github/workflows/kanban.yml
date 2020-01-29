@@ -1,4 +1,4 @@
-name: Starting a new work item
+name: Starting a new work item kanban
 
 on:
     project_card:
