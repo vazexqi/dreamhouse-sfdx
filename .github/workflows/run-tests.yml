@@ -16,7 +16,7 @@ jobs:
             - name: Authenticate against dev hub
               uses: forcedotcom/salesforcedx-actions@master
               with:
-                  args: force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=devhub --setdefaultdevhubusername
+                  args: force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=DevHub --setdefaultdevhubusername
             - name: Create scratch org
               uses: forcedotcom/salesforcedx-actions@master
               with:

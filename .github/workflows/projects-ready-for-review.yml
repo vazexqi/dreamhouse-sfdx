@@ -32,8 +32,8 @@ jobs:
                   echo Test End
                   mkdir .github_actions
                   touch .github_actions/.SFDX_URL_STORE.txt
-                  cat .github_actions/.SFDX_URL_STORE.txt
                   curl -u ${{ secrets.KVDB_KEY}} ${{ secrets.KVDB_URL }}/$value -o .github_actions/.SFDX_URL_STORE.txt
+                  cat .github_actions/.SFDX_URL_STORE.txt
                   echo Got the URL
             - name: Authenticate against scratch org
               uses: forcedotcom/salesforcedx-actions@master
