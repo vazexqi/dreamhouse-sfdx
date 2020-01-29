@@ -27,10 +27,13 @@ jobs:
               shell: bash
               run: |
                   value=$(node scripts/extract-issue-number.js ${{ github.event.project_card.content_url }})
+                  echo Test Start
                   echo ::set-output name=project_card_value::$value
+                  echo Test End
                   mkdir .github_actions
                   touch .github_actions/.SFDX_URL_STORE.txt
                   curl -u ${{ secrets.KVDB_KEY}} ${{ secrets.KVDB_URL }}/$value -o .github_actions/.SFDX_URL_STORE.txt
+                  echo Got the URL
             - name: Authenticate against scratch org
               uses: forcedotcom/salesforcedx-actions@master
               if: steps.check.outputs.isMatch == 'true'
