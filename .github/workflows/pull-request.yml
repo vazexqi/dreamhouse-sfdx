@@ -11,7 +11,7 @@ jobs:
         steps:
           - name: Check move from "IN PROGRESS" to "READY FOR REVIEW"
             id: check
-            uses: vazexqi/salesforcedx-kanban-actions/project_card-check-movement@master
+            uses: nitssnatha/salesforcedx-kanban-actions/project_card-check-movement@master
             with:
                 token: ${{ secrets.TOKEN}}
                 fromColumnId: ${{ github.event.changes.column_id.from }}
@@ -58,7 +58,7 @@ jobs:
                 branch: ${{ format('branch/{0}', steps.unstash.outputs.project_card_value) }}
                 force: true
           - name: Create a PR
-            uses: vazexqi/salesforcedx-kanban-actions/pulls-create-pr@master
+            uses: nitssnatha/salesforcedx-kanban-actions/pulls-create-pr@master
             if: steps.check.outputs.isMatch == 'true'
             with:
                 token: ${{ secrets.TOKEN}}
