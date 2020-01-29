@@ -55,7 +55,7 @@ jobs:
                   git add -A
                   git commit -m "Add new changes from scratch org"
             - name: Push changes
-              uses: vazexqi/github-push-action@master
+              uses: nitssnatha/github-push-action@master
               if: steps.check.outputs.isMatch == 'true'
               with:
                   TOKEN: ${{ secrets.TOKEN }}
