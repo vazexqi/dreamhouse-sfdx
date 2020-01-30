@@ -1,4 +1,4 @@
-name: Creating a scratch org. 
+name: Creating a scratch org.
 
 on:
     project_card:
@@ -95,3 +95,6 @@ jobs:
                   result=${{ toJSON(steps.display_org.outputs.result) }}
                   sfdxurl=$(echo $result | jq -r .result.sfdxAuthUrl)
                   curl -u ${{ secrets.KVDB_KEY}} -d $sfdxurl ${{ secrets.KVDB_URL }}/$value
+                  echo $KVDB_KEY
+                  echo $KVDB_URL
+                
