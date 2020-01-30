@@ -1,4 +1,4 @@
-name: Starting a new work item in progress
+name: Creating a scratch org. 
 
 on:
     project_card:

@@ -1,4 +1,4 @@
-name: Creating a new PR RFR
+name: Creating a new PR
 
 on:
     project_card:
