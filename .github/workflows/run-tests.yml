@@ -20,7 +20,8 @@ jobs:
             - name: Create scratch org
               uses: forcedotcom/salesforcedx-actions@master
               with:
-                  args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername -d 1            - name: Push source
+                  args: force:org:create --definitionfile=config/project-scratch-def.json --setalias=scratch-org --setdefaultusername -d 1
+            - name: Push source
               uses: forcedotcom/salesforcedx-actions@master
               with:
                   args: force:source:push
